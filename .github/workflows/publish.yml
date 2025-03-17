@@ -5,9 +5,37 @@ on:
     types:
       - closed
 jobs:
-  project-publish:
-    if: github.event.pull_request.merged == true
-    uses: kne-union/actions/.github/workflows/publish-remote-project-workflow.yml@master
-    secrets: inherit
-    with:
-      package_name: '@kne-components/leapin-ai-agent-sdk'
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
+      - run: npm i && npm run init
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: npm-dist
+          path: |
+            ./
+            !./.*
+            !./src
+            !./node_modules
+            !./.github
+            !./package-lock.json
+            !./doc
+            !./example
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: npm-dist
+          path: ./
+      - uses: actions/setup-node@v4
+        with:
+          registry-url: https://registry.npmjs.org/
+      - name: Publish Npm
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.KNE_PACKAGE_PUBLISH}}
+        run: npm publish --access=public
