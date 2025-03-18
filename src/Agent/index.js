@@ -1,6 +1,7 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import { FloatButton, Popover, Result } from 'antd';
 import Fetch from '@kne/react-fetch';
+import { useState } from 'react';
 import { ReactComponent as LogoIcon } from './logo.svg';
 import style from './style.module.scss';
 
@@ -29,13 +30,25 @@ const ChatBot = createWithRemoteLoader({
 });
 
 const Agent = createWithRemoteLoader({
-  modules: ['components-core:Global@usePreset']
+  modules: ['components-core:Global@usePreset', 'leapin-ai-agent:ChatBotClient']
 })(({ remoteModules }) => {
   const [usePreset] = remoteModules;
+  const [open, setOpen] = useState(false);
   const { options } = usePreset();
   return (
-    <Popover trigger="click" overlayClassName={style['chatbot']} content={<ChatBot />} arrow={false} placement="top">
-      <FloatButton style={{ overflow: 'hidden', bottom: options.bottom || '120px', right: options.right || '10px' }} icon={<LogoIcon style={{ width: '40px', height: '40px', position: 'absolute', left: '0px', top: '0px' }} />} />
+    <Popover
+      trigger="click"
+      open={open}
+      onOpenChange={open => {
+        setOpen(open);
+        options.onVisibleChange?.(open);
+      }}
+      rootClassName={style['chatbot']}
+      content={<ChatBot />}
+      arrow={false}
+      placement="top"
+    >
+      <FloatButton className={style['float-button']} icon={<LogoIcon style={{ width: '40px', height: '40px', position: 'absolute', left: '0px', top: '0px' }} />} />
     </Popover>
   );
 });

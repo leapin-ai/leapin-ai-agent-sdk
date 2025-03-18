@@ -37,6 +37,11 @@ const leapinAiAgentSDK = (options, target) => {
   }
 
   const root = ReactDOM.createRoot(target);
+  ['right', 'bottom', 'width'].map(name => {
+    if (options[name]) {
+      document.body.style.setProperty(`--leapin-ai-agent-sdk-${name}`, options[name]);
+    }
+  });
   return renderRoot(root, Object.assign({}, options, { uuid: window.localStorage.getItem(uuidKey) }));
 };
 
