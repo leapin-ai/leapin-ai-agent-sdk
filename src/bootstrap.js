@@ -2,6 +2,13 @@ import { globalInit } from './preset';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { v4 as uuidv4 } from 'uuid';
+
+const uuidKey = 'LEAPIN_AI_AGENT_SDK_UUID';
+
+if (!window.localStorage.getItem(uuidKey)) {
+  window.localStorage.setItem(uuidKey, uuidv4());
+}
 
 const renderRoot = async (root, options) => {
   const globalPreset = await globalInit(options);
@@ -23,8 +30,14 @@ const leapinAiAgentSDK = (options, target) => {
     console.warn('Please use LeapIn Business to obtain the secret key and host');
     return;
   }
+
+  if (!window.localStorage.getItem(uuidKey)) {
+    console.warn('Unable to identify user identity, please refresh the page and try again');
+    return;
+  }
+
   const root = ReactDOM.createRoot(target);
-  return renderRoot(root, options);
+  return renderRoot(root, Object.assign({}, options, { uuid: window.localStorage.getItem(uuidKey) }));
 };
 
 export default leapinAiAgentSDK;
