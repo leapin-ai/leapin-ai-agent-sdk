@@ -1,16 +1,20 @@
 .chatbot {
-  width: 1000px;
+  width: var(--leapin-ai-agent-sdk-width, 1000px);
+  :global(.ant-popover-inner) {
+    height: 100vh;
+    padding: 0;
+  }
+}
+
+.float-button {
+  overflow: hidden;
+  bottom: var(--leapin-ai-agent-sdk-bottom, 120px);
+  right: var(--leapin-ai-agent-sdk-right, 40px);
 }
 
 @media screen and (max-width: 600px) {
   .chatbot {
     width: 100%;
     overflow: hidden;
-
-    :global {
-      .ant-popover-inner {
-        padding: 0;
-      }
-    }
   }
 }

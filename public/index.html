@@ -41,13 +41,16 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     window.leapinAiAgentSDK({
-      host: 'https://staging.app.leapin-ai.com',
-      tpl: '{{url}}/ai-agent',
+      host: 'http://localhost:3010',
+      tpl: '{{url}}',
       secret: '0cd03b8d-4df9-4e34-9c29-7294be8c6489',
       bottom: '120px',
-      right: '40px'
+      right: '40px',
+      width: '100%',
+      onVisibleChange: (open) => {
+        console.log(open);
+      }
     });
-    // 在这里执行你的代码
   });
 </script>
 </html>
