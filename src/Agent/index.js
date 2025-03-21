@@ -1,5 +1,6 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
 import { FloatButton, Popover, Result } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import Fetch from '@kne/react-fetch';
 import { useState } from 'react';
 import { ReactComponent as LogoIcon } from './logo.svg';
@@ -30,11 +31,34 @@ const ChatBot = createWithRemoteLoader({
 });
 
 const Agent = createWithRemoteLoader({
-  modules: ['components-core:Global@usePreset', 'leapin-ai-agent:ChatBotClient']
+  modules: ['components-core:Global@usePreset', 'components-core:Tooltip']
 })(({ remoteModules }) => {
-  const [usePreset] = remoteModules;
+  const [usePreset, Tooltip] = remoteModules;
   const [open, setOpen] = useState(false);
+  const [tipsOpen, setTipsOpen] = useState(true);
   const { options } = usePreset();
+  const inner = (
+    <FloatButton
+      className={style['float-button']}
+      type="primary"
+      icon={
+        open ? (
+          <CloseOutlined />
+        ) : (
+          <LogoIcon
+            style={{
+              width: '40px',
+              background: '#FFFFFF',
+              height: '40px',
+              position: 'absolute',
+              left: '0px',
+              top: '0px'
+            }}
+          />
+        )
+      }
+    />
+  );
   return (
     <Popover
       trigger="click"
@@ -48,7 +72,21 @@ const Agent = createWithRemoteLoader({
       arrow={false}
       placement="top"
     >
-      <FloatButton className={style['float-button']} icon={<LogoIcon style={{ width: '40px', height: '40px', position: 'absolute', left: '0px', top: '0px' }} />} />
+      {options.tips ? (
+        <Tooltip
+          open={tipsOpen}
+          trigger="click"
+          content="Chat here to apply!"
+          placement="left"
+          onOpenChange={() => {
+            setTipsOpen(false);
+          }}
+        >
+          {inner}
+        </Tooltip>
+      ) : (
+        inner
+      )}
     </Popover>
   );
 });
