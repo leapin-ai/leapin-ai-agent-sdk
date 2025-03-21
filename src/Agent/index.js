@@ -1,5 +1,5 @@
 import { createWithRemoteLoader } from '@kne/remote-loader';
-import { FloatButton, Popover, Result } from 'antd';
+import { FloatButton, Popover, Result, Tooltip } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import Fetch from '@kne/react-fetch';
 import { useState } from 'react';
@@ -31,9 +31,9 @@ const ChatBot = createWithRemoteLoader({
 });
 
 const Agent = createWithRemoteLoader({
-  modules: ['components-core:Global@usePreset', 'components-core:Tooltip']
+  modules: ['components-core:Global@usePreset']
 })(({ remoteModules }) => {
-  const [usePreset, Tooltip] = remoteModules;
+  const [usePreset] = remoteModules;
   const [open, setOpen] = useState(false);
   const [tipsOpen, setTipsOpen] = useState(true);
   const { options } = usePreset();
@@ -73,17 +73,19 @@ const Agent = createWithRemoteLoader({
       placement="top"
     >
       {options.tips ? (
-        <Tooltip
+        <Popover
           open={tipsOpen}
+          arrow
           trigger="click"
           content="Chat here to apply!"
           placement="left"
+          getPopupContainer={() => document.body}
           onOpenChange={() => {
             setTipsOpen(false);
           }}
         >
           {inner}
-        </Tooltip>
+        </Popover>
       ) : (
         inner
       )}
