@@ -63,41 +63,7 @@ export const globalInit = async options => {
       parseUrlParams(params);
       return instance(params);
     };
-
-    ajax.sse = config => {
-      parseUrlParams(config);
-      const { url, params, urlParams, data, method, eventEmit } = config;
-      const queryString = qs.stringify(
-        transform(
-          Object.assign({}, params, data),
-          (result, value, key) => {
-            if (value !== void 0) {
-              result[key] = value;
-            }
-          },
-          {}
-        )
-      );
-
-      return new Promise(resolve => {
-        const eventSource = new EventSource(`${options.host}${url}${queryString ? '?' + queryString : ''}`);
-        const result = [];
-        eventSource.onmessage = event => {
-          // 处理服务器推送的消息
-          const data = JSON.parse(event.data);
-          result.push(data);
-          eventEmit && eventEmit(data, result);
-          if (['error', 'message_end'].indexOf(data.event) > -1) {
-            eventSource.close();
-            resolve(result);
-          }
-        };
-        eventSource.onerror = error => {
-          eventSource.close();
-          resolve(result);
-        };
-      });
-    };
+    ajax.parseUrlParams = parseUrlParams;
 
     return ajax;
   })();
