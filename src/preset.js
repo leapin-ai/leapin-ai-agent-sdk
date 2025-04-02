@@ -4,8 +4,6 @@ import { Spin, Empty, message } from 'antd';
 import axios from 'axios';
 import { preset as remoteLoaderPreset, loadModule } from '@kne/remote-loader';
 import omit from 'lodash/omit';
-import transform from 'lodash/transform';
-import qs from 'qs';
 
 export const globalInit = async options => {
   options = Object.assign({}, options);
@@ -124,7 +122,7 @@ export const globalInit = async options => {
   return {
     ajax,
     locale: 'en-US',
-    apis: Object.assign({}, { agent: getAgentApis() }),
+    apis: Object.assign({}, { agent: getAgentApis({ prefix: `${options.host}/api` }) }),
     options,
     themeToken: {
       colorPrimary: '#2257bf'
